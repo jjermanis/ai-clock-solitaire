@@ -1,0 +1,27 @@
+Version 01.01	28 minutes dev	1 minute CPU	6 minutes test		35 minutes
+
+Another birthday gift: I wanted to create a game from a solitaire I played as
+a young child. The trick: I did not know the name, and I only remembered a few
+details of the game. I provide the details I did know to Gemini. It suggested
+that the game was Clock Solitaire. I am near certain that's right. This is the 
+game that we'll create.
+Had some interaction with Gemini on the details of implementation. In
+particular, I provided the HTML file I created for Klondike. That would be
+used for the graphics in Clock.
+The initial version game out well. I was expecting the cards to be held at
+angle, lining up with the angle on the clock. After seeing this version,
+with all cards vertical, I don't think I want to do it. It does nothing to
+change the game, and would make cards easier to read. The only thing I see:
+removing the Undo button. It was there from the Klondike game. In this one,
+there is always only one choice. No point to having an Undo. There is also
+a defect, with the screen view needing work.
+
+
+TODO The layout of the screen is odd. It doesn't show the whole screen and
+	no scrolling. On one screen, the top is cut off. On another screen, 
+	it's the bottom.
+TODO does the game recognize victory? I haven't seen it yet. Odds are 1 in
+	13 to get there. Tweak it (put a king in its 4th spot) to check.
+TODO get rid of Undo button
+TODO Added MIT License to UI.
+TODO Create README

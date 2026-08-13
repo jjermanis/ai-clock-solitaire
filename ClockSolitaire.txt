@@ -1,0 +1,13 @@
+Create a single-page app in a single HTML file with the following requirements:
+- Name: Clock Solitaire
+- This app implements a standard version of Clock Solitaire, with a clean web layout.
+- I attached klondike.html with this request. 
+- The background in Clock Solitaire should match klondike.html.
+- The UI for a card (front and back) in Clock Solitaire should match klondike.html.
+- In line with the standard Clock Solitaire, there is one active card at any time.
+- To move, the player needs to click and drag the card to the spot it belongs at. The placement does not need to be perfect - if the card is dragged to spot over the legal destination, the move will be allowed.
+- If the player turns all the cards face up, the player wins.
+- If the player turns over all four Kings while some other cards still need to be moved, the player loses.
+- The game should size dynamically, based on the size of the viewport. Try to support a minimum of 360x600.
+
+
