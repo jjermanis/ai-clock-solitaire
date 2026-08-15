@@ -382,7 +382,6 @@
 </style>
 </head>
 <body>
-<div id="game-scaler">
   <div id="game-wrapper">
     <div id="game-canvas">
       <div id="game-header">
@@ -425,7 +424,6 @@
     <button id="btn-new">New Game</button>
     <div id="cards-left-display">Face up: 0/52</div>
   </div>
-</div>
 
 <script>
 // ═══════════════════════════════════════════════════════
@@ -730,9 +728,7 @@ function getClientXY(e) {
 }
 
 function getZoomScale() {
-  const wrapper = document.getElementById('game-wrapper');
-  const rect = wrapper.getBoundingClientRect();
-  return rect.width / 480;
+  return parseFloat(document.getElementById('game-wrapper').style.zoom) || 1;
 }
 
 function getCanvasRect() {
@@ -937,7 +933,7 @@ function applyScale() {
   const scale = Math.min(scaleX, scaleY);
 
   const wrapper = document.getElementById('game-wrapper');
-  wrapper.style.transform = `scale(${scale})`;
+  wrapper.style.zoom = scale;
 }
 
 window.addEventListener('resize', applyScale);

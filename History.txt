@@ -17,9 +17,22 @@ there is always only one choice. No point to having an Undo. There is also
 a defect, with the screen view needing work.
 
 
-TODO The layout of the screen is odd. It doesn't show the whole screen and
-	no scrolling. On one screen, the top is cut off. On another screen, 
-	it's the bottom.
+Version 01.02	13 minutes dev	1 minute CPU	4 minutes test		53 minutes
+
+One of the defects I noticed was significant. The game did adjust dynamically
+in size, based on the available size. However, it would cut-off space in 
+different ways. On a large screen, the text at the top would not be seen.
+On a small monitor, the buttons at the bottom would be hidden. You could
+change the size of the browser to see this changes live. Not good.
+I asked Google to fix, including my standard to show where to make the 
+changes. It provided a fix describing the issue, the change... and the
+entire source code. I reject that. I looked in source control - there
+were a lot of changes that were made. I don't want to do that. I asked
+Gemini that I wanted to know clearly when I could make the changes, and
+what to put there. That was done; the fix worked well.
+
+
+
 TODO does the game recognize victory? I haven't seen it yet. Odds are 1 in
 	13 to get there. Tweak it (put a king in its 4th spot) to check.
 TODO get rid of Undo button
