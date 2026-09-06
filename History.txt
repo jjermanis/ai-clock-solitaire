@@ -32,9 +32,37 @@ Gemini that I wanted to know clearly when I could make the changes, and
 what to put there. That was done; the fix worked well.
 
 
+Version 01.03	8 minutes dev	0 minutes CPU	1 minutes test		1 hour 2
 
-TODO does the game recognize victory? I haven't seen it yet. Odds are 1 in
-	13 to get there. Tweak it (put a king in its 4th spot) to check.
-TODO get rid of Undo button
-TODO Added MIT License to UI.
-TODO Create README
+I had played the game several times. I never won. That's not usual: the
+odds are 1 out of 13 to win the game. I asked Gemini to create a test 
+version that will win. I wanted to confirm that the game detected winning.
+It does this in a straight forward way. The cards are stacked by suit, in
+order from 1 to Queen, then to King. This is done for all 4 suits. This
+guarantees that the player will win. I tried this. It did work, and the
+game confirmed that the player won.
+I am not going to put that in the main game. I don't think it's necessary.
+I'll commit it as a separate test_win version of the game.
+Funny side note. After making this test case... the next (real) game I
+played, I won on the first try.
+
+
+Version 01.04	19 minutes dev	1 minute CPU	3 minutes test
+
+Doing cleanup for the final version before release.
+I removed the Undo Button. It was only there because the UI was copied from
+another solitaire game. It has zero purpose here: no options ever on move.
+It was easy, and drops about 70 LOC.
+I added the MIT License to the UI. No help was needed from Gemini. It's 
+standard, and I copied it exactly from the other solitaire game.
+I wanted to add a little bit of an offset to the face-up decks, to give
+some indication of how much they have played. Getting the current settings
+from Gemini took a bit of extra work. But the change was made. Not ideal,
+but we need the space for a lot of stacks. I'm alright with this.
+
+
+
+TODO The font vary in size. Looks different on PC and iPad. Get it to
+	be constant
+
+

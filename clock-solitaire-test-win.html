@@ -322,6 +322,31 @@
     color: #fff;
   }
 
+  #btn-undo {
+    position: absolute;
+    bottom: 12px;
+    left: 12px;
+    background: rgba(0,0,0,0.35);
+    color: rgba(255,255,255,0.8);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 5px;
+    padding: 6px 18px;
+    font-size: var(--font-ui-sm);
+    font-family: Georgia, serif;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  #btn-undo:hover {
+    background: rgba(0,0,0,0.55);
+    color: #fff;
+  }
+
+  #btn-undo:disabled {
+    opacity: 0.3;
+    cursor: default;
+  }
+
   #cards-left-display {
     position: absolute;
     bottom: 12px;
@@ -354,24 +379,6 @@
     80%  { opacity: 1; }
     100% { transform: translateY(750px); opacity: 0; }
   }
-
-  /* License MIT used in this file */
-  #license {
-      position: fixed;
-      bottom: 5px;
-      right: 10px;
-      font-size: 11px;
-      opacity: 0.5;
-  }
-  #license a {
-      color: #aaaaaa;
-      text-decoration: none;
-  }
-  #license a:hover {
-      text-decoration: underline;
-  }  
-  /* License */
-
 </style>
 </head>
 <body>
@@ -413,6 +420,7 @@
       </div>
     </div>
 
+    <button id="btn-undo">Undo</button>
     <button id="btn-new">New Game</button>
     <div id="cards-left-display">Face up: 0/52</div>
   </div>
@@ -457,7 +465,73 @@ function getSlotPos(slotIdx) {
 // - upPiles: array of face-up cards
 let slots = Array.from({ length: 13 }, () => ({ downPiles: [], upPiles: [] }));
 let activeCardState = null; // { card, fromSlot }
+let undoStack = [];
 let gameEnded = false;
+
+function saveState() {
+  undoStack.push({
+    slots: slots.map(s => ({
+      downPiles: s.downPiles.map(c => ({ ...c })),
+      upPiles: s.upPiles.map(c => ({ ...c }))
+    })),
+    activeCardState: activeCardState ? {
+      card: { ...activeCardState.card },
+      fromSlot: activeCardState.fromSlot
+    } : null,
+    gameEnded
+  });
+  updateUndoButton();
+}
+
+function updateUndoButton() {
+  document.getElementById('btn-undo').disabled = undoStack.length === 0 || gameEnded;
+}
+
+function undo() {
+  if (undoStack.length === 0) return;
+  const state = undoStack.pop();
+  slots = state.slots;
+  activeCardState = state.activeCardState;
+  gameEnded = state.gameEnded;
+  
+  document.getElementById('win-screen').classList.remove('show');
+  document.getElementById('loss-screen').classList.remove('show');
+  clearBounceCards();
+  updateUndoButton();
+  render();
+}
+
+// Set to true to force a win every game, or false for standard random play
+const TEST_ALWAYS_WIN = true;
+
+function makeWinningDeck() {
+  // Pool of cards grouped by target slot rank (0..12)
+  const pools = Array.from({ length: 13 }, (_, r) =>
+    SUITS.map(suit => ({
+      suit,
+      rank: RANKS[r],
+      targetSlot: r,
+      id: RANKS[r] + suit
+    }))
+  );
+
+  const deck = new Array(52);
+
+  // Slots 0..11: every card popped from slot 's' targets slot 's + 1'
+  for (let s = 0; s < 12; s++) {
+    const nextTarget = s + 1;
+    for (let pop = 0; pop < 4; pop++) {
+      deck[s * 4 + pop] = pools[nextTarget].pop();
+    }
+  }
+
+  // Slot 12 (Center): every card popped from slot 12 targets slot 0 (Ace)
+  for (let pop = 0; pop < 4; pop++) {
+    deck[12 * 4 + pop] = pools[0].pop();
+  }
+
+  return deck;
+}
 
 // ═══════════════════════════════════════════════════════
 //  DECK & DEALING
@@ -492,14 +566,16 @@ function cardColor(suit) { return isRed(suit) ? 'red' : 'black'; }
 function newGame() {
   slots = Array.from({ length: 13 }, () => ({ downPiles: [], upPiles: [] }));
   activeCardState = null;
+  undoStack = [];
   gameEnded = false;
 
   document.getElementById('win-screen').classList.remove('show');
   document.getElementById('loss-screen').classList.remove('show');
   document.getElementById('confirm-overlay').classList.remove('show');
   clearBounceCards();
+  updateUndoButton();
 
-  const deck = shuffle(makeDeck());
+  const deck = TEST_ALWAYS_WIN ? makeWinningDeck() : shuffle(makeDeck());
   
   // Deal 4 face-down cards to each of the 13 slots
   let idx = 0;
@@ -566,6 +642,8 @@ function executeMoveToSlot(targetSlotIdx) {
     return false;
   }
 
+  saveState();
+
   // Place active card face up into target slot
   const placedCard = activeCardState.card;
   slots[targetSlotIdx].upPiles.push(placedCard);
@@ -623,12 +701,12 @@ function render() {
       canvas.appendChild(downEl);
     }
 
-    // Face-up placed cards
+    // Face-up placed cards (stacked with slight vertical offset if > 1)
     for (let u = 0; u < slots[s].upPiles.length; u++) {
       const uCard = slots[s].upPiles[u];
       const uEl = makeCardEl(uCard);
-      uEl.style.left = (pos.x + 2 + u * 1) + 'px';
-      uEl.style.top = (pos.y + 2 + u * 3) + 'px';
+      uEl.style.left = pos.x + 'px';
+      uEl.style.top = (pos.y + Math.min(u * 2, 6)) + 'px';
       uEl.style.zIndex = 20 + u;
       canvas.appendChild(uEl);
     }
@@ -649,6 +727,7 @@ function render() {
 
   // Update counter
   document.getElementById('cards-left-display').textContent = `Face up: ${countFaceUpCards()}/52`;
+  updateUndoButton();
   attachCardEvents();
 }
 
@@ -850,6 +929,7 @@ function clearBounceCards() {
 // ═══════════════════════════════════════════════════════
 //  UI BUTTON CONTROLS
 // ═══════════════════════════════════════════════════════
+document.getElementById('btn-undo').addEventListener('click', undo);
 document.getElementById('btn-win-new').addEventListener('click', newGame);
 document.getElementById('btn-loss-new').addEventListener('click', newGame);
 
@@ -895,10 +975,5 @@ applyScale();
 // Start initial game
 newGame();
 </script>
-
-<div id="license">
-    <a href="../../LICENSE.txt">MIT License</a>
-</div>
-
 </body>
 </html>
