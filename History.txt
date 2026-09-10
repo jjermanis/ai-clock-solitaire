@@ -47,7 +47,7 @@ Funny side note. After making this test case... the next (real) game I
 played, I won on the first try.
 
 
-Version 01.04	19 minutes dev	1 minute CPU	3 minutes test
+Version 01.04	19 minutes dev	1 minute CPU	3 minutes test		1 hour 25
 
 Doing cleanup for the final version before release.
 I removed the Undo Button. It was only there because the UI was copied from
@@ -61,8 +61,8 @@ from Gemini took a bit of extra work. But the change was made. Not ideal,
 but we need the space for a lot of stacks. I'm alright with this.
 
 
+Version 01.05	3 minutes dev	0 minutes CPU	1 minute test		1 hour 29
 
-TODO The font vary in size. Looks different on PC and iPad. Get it to
-	be constant
-
+Fonts looked different sizes on Windows and iOS. Tried a change. It didn't 
+fail Windows. We'll see how it goes on iOS.
 
